@@ -86,7 +86,7 @@ ng version
 ## Instalación
 
 ```bash
-git clone https://github.com/TU_USUARIO/clinica-veterinaria.git
+git clone https://github.com/owenpiero123/clinica-veterinaria.git
 cd clinica-veterinaria
 npm install
 ```
@@ -94,7 +94,7 @@ npm install
 ## Ejecución
 
 ```bash
-ng serve
+npm start
 ```
 
 Abrir en el navegador: **http://localhost:4200**
@@ -110,7 +110,7 @@ ng serve --port 4300
 ### Generar la versión de producción
 
 ```bash
-ng build
+npm run build
 ```
 
 Los archivos se generan en la carpeta `dist/`.
@@ -120,16 +120,15 @@ Los archivos se generan en la carpeta `dist/`.
 El inicio de sesión es **simulado** (no hay backend): los usuarios están definidos en `auth-service.ts`.
 
 | Usuario | Clave |
-|---|---|
+|---------|-------|
 | `admin` | `clinica123` |
-| 
 
 ## Pruebas
 
 ### Pruebas automáticas
 
 ```bash
-ng test
+npm test -- --watch=false
 ```
 
 ### Pruebas manuales (flujo completo)
