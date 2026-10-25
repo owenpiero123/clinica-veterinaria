@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm rounded-3 mb-4 px-3" *ngIf="auth.sesion$ | async as usuario">
+  <div class="container-fluid">
+    <!-- Logotipo y Nombre -->
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" routerLink="/mascotas">
+      <span class="fs-4">🐾</span>
+      <span>Clínica Veterinaria</span>
+    </a>
+
+    <!-- Enlaces de navegación -->
+    <div class="navbar-nav me-auto flex-row gap-3">
+      <a class="nav-link text-white fw-semibold px-2" routerLink="/mascotas" routerLinkActive="active border-bottom border-2">
+        🐶 Mascotas
+      </a>
+      <a class="nav-link text-white fw-semibold px-2" routerLink="/citas" routerLinkActive="active border-bottom border-2">
+        📅 Citas
+      </a>
+    </div>
+
+    <!-- Identificador de usuario y botón de salida -->
+    <div class="d-flex align-items-center gap-3">
+      <span class="badge bg-light text-dark py-2 px-3 fw-semibold rounded-pill">
+        👤 {{ usuario }}
+      </span>
+      <button type="button" class="btn btn-danger btn-sm fw-semibold shadow-sm" (click)="cerrarSesion()">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="container mb-5">
+  <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,145 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold text-dark mb-1">📝 Registrar Nueva Mascota</h2>
+        <p class="text-muted small mb-0">Completa la información del paciente y su dueño responsable</p>
+      </div>
+      <a routerLink="/mascotas" class="btn btn-outline-primary fw-semibold">
+        ⬅ Volver al listado
+      </a>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()">
+      <!-- Bloque 1: Información de la Mascota -->
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+          <h5 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2">
+            <span>🐾</span> Datos del Paciente
+          </h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nombre" class="form-label fw-semibold">Nombre de la mascota</label>
+              <input
+                id="nombre"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="invalido('nombre')"
+                formControlName="nombre"
+                placeholder="Ej. Firulais"
+              />
+              <div class="invalid-feedback">Mínimo 2 caracteres requeridos.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="especie" class="form-label fw-semibold">Especie</label>
+              <select
+                id="especie"
+                class="form-select"
+                [class.is-invalid]="invalido('especie')"
+                formControlName="especie"
+              >
+                <option *ngFor="let e of especies" [value]="e">
+                  {{ e | titlecase }}
+                </option>
+              </select>
+              <div class="invalid-feedback">Selecciona una especie.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="raza" class="form-label fw-semibold">Raza</label>
+              <input
+                id="raza"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="invalido('raza')"
+                formControlName="raza"
+                placeholder="Ej. Mestizo, Siamés, Labrador..."
+              />
+              <div class="invalid-feedback">La raza es obligatoria.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="fechaNacimiento" class="form-label fw-semibold">Fecha de Nacimiento</label>
+              <input
+                id="fechaNacimiento"
+                type="date"
+                class="form-control"
+                [class.is-invalid]="invalido('fechaNacimiento')"
+                formControlName="fechaNacimiento"
+              />
+              <div class="invalid-feedback">Indica una fecha válida.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque 2: Información del Propietario -->
+      <div class="card shadow-sm border-0 rounded-4 mb-4" formGroupName="dueno">
+        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+          <h5 class="fw-bold text-primary mb-0 d-flex align-items-center gap-2">
+            <span>👤</span> Datos del Propietario
+          </h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label for="duenoNombre" class="form-label fw-semibold">Nombre y Apellido del Dueño</label>
+              <input
+                id="duenoNombre"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="invalido('dueno.nombre')"
+                formControlName="nombre"
+                placeholder="Ej. Juan Pérez"
+              />
+              <div class="invalid-feedback">Mínimo 3 caracteres requeridos.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="duenoTelefono" class="form-label fw-semibold">Teléfono de contacto</label>
+              <input
+                id="duenoTelefono"
+                type="tel"
+                class="form-control"
+                [class.is-invalid]="invalido('dueno.telefono')"
+                formControlName="telefono"
+                placeholder="9 dígitos (inicia con 9)"
+              />
+              <div class="invalid-feedback">Debe contener 9 dígitos e iniciar con 9.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="duenoEmail" class="form-label fw-semibold">Correo Electrónico</label>
+              <input
+                id="duenoEmail"
+                type="email"
+                class="form-control"
+                [class.is-invalid]="invalido('dueno.email')"
+                formControlName="email"
+                placeholder="contacto@ejemplo.com"
+              />
+              <div class="invalid-feedback">Ingresa un correo electrónico válido.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones de Formulario -->
+      <div class="d-flex justify-content-end gap-3 mb-5">
+        <a routerLink="/mascotas" class="btn btn-outline-secondary px-4 fw-semibold border">
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="btn btn-primary px-5 fw-bold shadow-sm"
+          [disabled]="form.invalid"
+        >
+          💾 Guardar Mascota
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

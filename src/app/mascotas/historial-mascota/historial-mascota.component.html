@@ -1,0 +1,168 @@
+<ng-container *ngIf="mascota; else noExiste">
+  <!-- Cabecera de navegación -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold text-dark mb-1">
+        📋 Historial Clínico: <span class="text-primary">{{ mascota.nombre }}</span>
+      </h2>
+      <p class="text-muted px-3 small mb-0">Seguimiento de consultas, diagnósticos y atenciones médicas</p>
+    </div>
+    <a routerLink="/mascotas" class="btn btn-outline-primary fw-semibold">
+      ⬅ Volver a Mascotas
+    </a>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <!-- Tarjeta de Ficha de la Mascota -->
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm border-0 rounded-4 h-100">
+        <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+          <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+            <span>{{ mascota.especie === 'gato' ? '🐱' : (mascota.especie === 'perro' ? '🐶' : '🐾') }}</span>
+            Datos del Paciente
+          </h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+              <span class="text-muted">Especie / Raza</span>
+              <span class="fw-bold text-dark">
+                {{ mascota.especie | titlecase }}
+                <small class="text-muted fw-normal" *ngIf="mascota.raza">({{ mascota.raza }})</small>
+              </span>
+            </li>
+            <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+              <span class="text-muted">Edad</span>
+              <span class="badge bg-light text-dark border border-dark-subtle px-3 py-2 fs-7">
+                {{ mascota.edadEnAnios }} años
+              </span>
+            </li>
+            <li class="list-group-item px-0 pt-4">
+              <h6 class="fw-bold text-dark mb-2">👤 Propietario</h6>
+              <p class="mb-1 fw-semibold text-dark">{{ mascota.dueno.nombre }}</p>
+              <p class="mb-1 small text-muted">📞 {{ mascota.dueno.telefono }}</p>
+              <p class="mb-0 small text-muted">✉️ {{ mascota.dueno.email }}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de Citas y Atenciones -->
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-0 rounded-4 h-100">
+        <div class="card-header bg-white border-0 pt-4 px-4 pb-2 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+          <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+            <span>🩺</span> Atenciones Registradas
+          </h5>
+
+          <!-- Filtro Reactivo de Estados -->
+          <div class="d-flex align-items-center gap-2">
+            <label for="filtroSelect" class="form-label mb-0 fw-semibold small text-muted text-nowrap">Mostrar:</label>
+            <select id="filtroSelect" class="form-select form-select-sm" [formControl]="filtro">
+              <option value="todas">Todas</option>
+              <option value="pendiente">Pendientes</option>
+              <option value="atendida">Atendidas</option>
+              <option value="cancelada">Canceladas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-body px-4 pb-4">
+          <ng-container *ngIf="citas$ | async as citas">
+            <div *ngIf="citas.length === 0" class="text-center py-5 text-muted">
+              <span class="fs-1 d-block mb-2">🔍</span>
+              No hay citas con este filtro.
+            </div>
+
+            <div class="list-group list-group-flush gap-3" *ngIf="citas.length > 0">
+              <div
+                *ngFor="let c of citas"
+                [appResaltarCitaProxima]="c.fecha"
+                class="list-group-item rounded-3 border p-3 shadow-none"
+              >
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1">
+                      📅 {{ c.fecha | fechaCita }}
+                    </h6>
+                    <p class="mb-0 text-muted small">
+                      <strong class="text-dark">Motivo:</strong> {{ c.motivo }}
+                    </p>
+                  </div>
+                  <span
+                    class="badge text-uppercase px-2 py-1"
+                    [ngClass]="{
+                      'bg-warning text-dark': c.estado === 'pendiente',
+                      'bg-success': c.estado === 'atendida',
+                      'bg-danger': c.estado === 'cancelada'
+                    }"
+                  >
+                    {{ c.estado | estadoCita }}
+                  </span>
+                </div>
+
+                <!-- Bloque de Diagnóstico -->
+                <div *ngIf="c.diagnostico" class="alert alert-light border my-2 py-2 px-3 small">
+                  <strong class="text-dark">🩺 Diagnóstico:</strong> {{ c.diagnostico }}
+                </div>
+
+                <!-- Acciones para citas pendientes -->
+                <div *ngIf="c.estado === 'pendiente'" class="mt-3 pt-2 border-top">
+                  <ng-container *ngIf="atendiendo !== c.id; else formDiag">
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn btn-sm btn-primary text-dark fw-bold" [disabled]="!puedeAtender(c.fecha)" (click)="iniciar(c)">
+                        🩺 Registrar atención
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" (click)="cancelarCita(c)">
+                        ✕ Cancelar cita
+                      </button>
+                    </div>
+                  </ng-container>
+
+                  <!-- Formulario en línea de atención/diagnóstico -->
+                  <ng-template #formDiag>
+                    <div class="bg-light p-3 rounded-3 border">
+                      <label class="form-label fw-bold text-dark small">Registrar Diagnóstico:</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm mb-1"
+                        [class.is-invalid]="diagnostico.invalid && diagnostico.touched"
+                        [formControl]="diagnostico"
+                        placeholder="Ej. Vacunación antirrábica aplicada sin novedades..."
+                      />
+                      <div class="text-danger small mb-2" *ngIf="diagnostico.invalid && diagnostico.touched">
+                        Mínimo 5 caracteres requeridos.
+                      </div>
+                      <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-success fw-bold" (click)="confirmar(c)">
+                          💾 Guardar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="cancelarEdicion()">
+                          Volver
+                        </button>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noExiste>
+  <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+    <div class="py-4">
+      <span class="fs-1 d-block mb-3">⚠️</span>
+      <h4 class="fw-bold text-dark">Mascota no encontrada</h4>
+      <p class="text-muted">El paciente solicitado no existe o fue retirado del sistema.</p>
+      <a routerLink="/mascotas" class="btn btn-primary fw-semibold mt-2">
+        ⬅ Volver al listado de mascotas
+      </a>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,84 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold text-dark mb-1">📅 Agendar Cita Médica</h2>
+        <p class="text-muted small mb-0">
+          Horario programado: <span class="badge bg-primary text-white fs-6 ms-1">{{ fecha | fechaCita }}</span>
+        </p>
+      </div>
+      <a routerLink="/citas" class="btn btn-outline-primary fw-semibold">
+        ⬅ Volver a Agenda
+      </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+        <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+          <span>🩺</span> Datos de la Consulta
+        </h5>
+      </div>
+
+      <div class="card-body px-4 pb-4">
+        <form [formGroup]="form" (ngSubmit)="guardar()">
+          <!-- Selector de Paciente -->
+          <div class="mb-3">
+            <label for="mascotaId" class="form-label fw-semibold">Mascota (Paciente)</label>
+            <select
+              id="mascotaId"
+              class="form-select"
+              [class.is-invalid]="invalido('mascotaId')"
+              formControlName="mascotaId"
+            >
+              <option [ngValue]="0" disabled>Selecciona una mascota...</option>
+              <option *ngFor="let m of mascotas$ | async" [ngValue]="m.id">
+                {{ m.nombre }} (Dueño: {{ m.dueno.nombre }})
+              </option>
+            </select>
+            <div class="invalid-feedback">Debes seleccionar una mascota.</div>
+
+            <div *ngIf="(mascotas$ | async)?.length === 0" class="alert alert-warning border small mt-2">
+              No hay mascotas registradas aún.
+              <a routerLink="/mascotas/nueva" class="fw-bold text-dark text-decoration-underline ms-1">
+                Registra una primero aquí
+              </a>.
+            </div>
+          </div>
+
+          <!-- Motivo de la Cita -->
+          <div class="mb-4">
+            <label for="motivo" class="form-label fw-semibold">Motivo de la consulta</label>
+            <input
+              id="motivo"
+              type="text"
+              class="form-control"
+              [class.is-invalid]="invalido('motivo')"
+              formControlName="motivo"
+              placeholder="Ej. Control de vacunas, chequeo general o desparasitación"
+            />
+            <div class="invalid-feedback">Describe el motivo (mínimo 5 caracteres).</div>
+          </div>
+
+          <!-- Alerta de Error de Servicio (si la hay) -->
+          <div *ngIf="error" class="alert alert-danger border py-2 px-3 small mb-3">
+            ⚠️ {{ error }}
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+            <a routerLink="/citas" class="btn btn-outline-secondary border px-4 fw-semibold">
+              Cancelar
+            </a>
+            <button
+              type="submit"
+              class="btn btn-primary px-5 fw-bold shadow-sm"
+              [disabled]="form.invalid"
+            >
+              💾 Agendar Cita
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

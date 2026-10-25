@@ -1,0 +1,167 @@
+<div class="row g-4">
+  <!-- Cabecera simple -->
+  <div class="col-12">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="fw-bold text-dark mb-2">Agenda de Citas</h3>
+          <small class="text-muted">Selecciona una fecha para ver o agendar consultas</small>
+        </div>
+
+        <!-- Selector de mes -->
+        <div class="d-flex align-items-center bg-light border rounded-pill p-1 shadow-sm">
+          <button
+            type="button"
+            class="btn btn-primary text-white rounded-circle d-flex align-items-center justify-content-center p-0"
+            style="width: 34px; height: 34px; font-size: 1rem; line-height: 1;"
+            (click)="cambiarMes(-1)"
+            title="Mes anterior"
+          >
+            ❮
+          </button>
+
+          <span class="fw-bold px-3 text-capitalize text-dark text-nowrap fs-6">
+            {{ tituloMes }}
+          </span>
+
+          <button
+            type="button"
+            class="btn btn-primary text-white rounded-circle d-flex align-items-center justify-content-center p-0"
+            style="width: 34px; height: 34px; font-size: 1rem; line-height: 1;"
+            (click)="cambiarMes(1)"
+            title="Mes siguiente"
+          >
+            ❯
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="citas$ | async as lista">
+    <!-- Columna Izquierda: Calendario -->
+    <div class="col-12 col-lg-7">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+          <!-- Cabeceras LUN a DOM -->
+          <div class="cal-grid text-center mb-3 py-2 bg-primary bg-opacity-25 rounded-3 text-dark fw-bold text-uppercase small" translate="no">
+            <span *ngFor="let n of diasSemana" class="py-1">
+              {{ n }}
+            </span>
+          </div>
+
+          <!-- Cuadrícula de días -->
+          <div class="cal-grid text-center">
+            <ng-container *ngFor="let d of celdas">
+              <div *ngIf="!d"></div>
+
+              <button
+                *ngIf="d"
+                type="button"
+                class="cal-day"
+                [class.is-selected]="seleccionado && mismoDia(d, seleccionado)"
+                [class.is-today]="esHoy(d)"
+                (click)="seleccionar(d)"
+              >
+                <span>{{ d.getDate() }}</span>
+                <span
+                  *ngIf="citasDelDia(d, lista).length > 0"
+                  class="badge rounded-pill bg-warning text-dark position-absolute top-0 end-0 m-1"
+                  style="font-size: 0.65rem;"
+                >
+                  {{ citasDelDia(d, lista).length }}
+                </span>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Detalle y Horarios -->
+    <div class="col-12 col-lg-5">
+      <div *ngIf="seleccionado as dia" class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body p-4">
+          <h5 class="fw-bold text-dark text-capitalize mb-1">
+            {{ tituloDia(dia) }}
+          </h5>
+          <p class="text-muted small mb-4">Turnos del día y atenciones</p>
+
+          <!-- Citas programadas -->
+          <h6 class="fw-bold text-dark small text-uppercase mb-3 d-flex align-items-center gap-2">
+            <span>🐾</span> Citas programadas
+          </h6>
+
+          <div *ngIf="citasDelDia(dia, lista).length === 0" class="text-muted small py-3 text-center border rounded-3 mb-4 bg-light">
+            No hay citas registradas para este día.
+          </div>
+
+          <div class="d-flex flex-column gap-2 mb-4" *ngIf="citasDelDia(dia, lista).length > 0">
+            <div
+              *ngFor="let c of citasDelDia(dia, lista)"
+              [appResaltarCitaProxima]="c.fecha"
+              class="border rounded-3 p-3 bg-white shadow-sm"
+            >
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h6 class="fw-bold text-dark mb-0 fs-6">
+                    🐾 {{ nombreMascota(c.mascotaId) }}
+                  </h6>
+                  <small class="text-primary fw-semibold">
+                    🕒 {{ c.fecha | date:'shortTime' }}
+                  </small>
+                </div>
+                <span
+                  class="badge text-uppercase px-2 py-1"
+                  [ngClass]="{
+                    'bg-warning text-dark': c.estado === 'pendiente',
+                    'bg-success text-white': c.estado === 'atendida',
+                    'bg-danger text-white': c.estado === 'cancelada'
+                  }"
+                >
+                  {{ c.estado | estadoCita }}
+                </span>
+              </div>
+
+              <p class="text-muted small mb-2">
+                <span class="fw-semibold text-secondary">Motivo:</span> {{ c.motivo }}
+              </p>
+
+              <div *ngIf="c.estado === 'pendiente'" class="d-flex gap-2 pt-2 border-top">
+                <a [routerLink]="['/mascotas', c.mascotaId, 'historial']" class="btn btn-sm btn-primary text-white fw-semibold">
+                  🩺 Atender
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" (click)="cancelar(c)">
+                  ✕ Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Horarios disponibles: Botones limpios en cuadrícula -->
+          <!-- Horarios disponibles -->
+          <h6 class="fw-bold text-dark small text-uppercase mb-3">⏰ Horarios disponibles</h6>
+          <div class="row row-cols-3 g-2">
+            <div class="col" *ngFor="let s of slots(dia, lista); trackBy: trackSlot">
+              <button
+                type="button"
+                class="btn w-100 py-2 slot-btn d-flex flex-column align-items-center justify-content-center shadow-none"
+                [ngClass]="{
+                  'bg-light border-0 text-muted opacity-50': s.ocupado || s.pasado
+                }"
+                [disabled]="s.ocupado || s.pasado"
+                (click)="agendar(s)"
+              >
+                <span class="fs-6 slot-hora">{{ s.etiqueta }}</span>
+                <span class="slot-estado" style="font-size: 0.72rem;">
+                  {{ s.ocupado ? 'Ocupado' : (s.pasado ? 'Pasado' : 'Disponible') }}
+                </span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

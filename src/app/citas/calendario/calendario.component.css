@@ -1,0 +1,96 @@
+/* Cuadrícula de 7 columnas exactas */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+/* Casilla de día con forma definida y fondo suave */
+.cal-day {
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: 500;
+  border: 1px solid #edf2f0;
+  background-color: #fbfdfc;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  position: relative;
+  padding: 4px;
+}
+
+.cal-day:hover:not(.is-selected) {
+  background-color: #e8f5f1;
+  border-color: #78c2ad;
+  color: #2b3e50;
+  transform: translateY(-1px);
+}
+
+/* Día de hoy (24): borde menta corporativo */
+.cal-day.is-today {
+  border: 2px solid #78c2ad;
+  font-weight: 700;
+  color: #2b3e50;
+}
+
+/* Día seleccionado (28): verde menta sólido */
+.cal-day.is-selected {
+  background-color: #78c2ad !important;
+  border-color: #78c2ad !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(120, 194, 173, 0.45);
+}
+
+.cal-day.is-selected span {
+  color: #ffffff !important;
+}
+
+/* Badge contador de citas del día */
+.cal-day .badge-cita {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.65rem;
+  padding: 2px 5px;
+  border-radius: 6px;
+  background-color: #f39c12;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.cal-day.is-selected .badge-cita {
+  background-color: #ffffff;
+  color: #78c2ad;
+}
+
+/* Botones de turnos de la derecha */
+.slot-btn {
+  background-color: #ffffff;
+  border: 1.5px solid #78c2ad;
+  border-radius: 10px;
+  color: #2b3e50;
+  transition: all 0.2s ease-in-out;
+}
+
+.slot-btn .slot-hora {
+  color: #2b3e50;
+  font-weight: 700;
+}
+
+.slot-btn:hover:not(:disabled) {
+  background-color: #78c2ad;
+  border-color: #78c2ad;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(120, 194, 173, 0.35);
+}
+
+.slot-btn:hover:not(:disabled) .slot-hora,
+.slot-btn:hover:not(:disabled) .slot-estado {
+  color: #ffffff !important;
+}

@@ -1,0 +1,87 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
+  <div class="container" style="max-width: 440px;">
+    <!-- Encabezado con Icono -->
+    <div class="text-center mb-4">
+      <div class="d-inline-flex align-items-center justify-content-center bg-white shadow-sm rounded-circle mb-3 p-3 border" style="width: 72px; height: 72px;">
+        <span class="fs-1">🐾</span>
+      </div>
+      <h3 class="fw-bold text-dark mb-1">Clínica Veterinaria</h3>
+      <p class="text-muted small">Acceso al sistema de gestión clínica</p>
+    </div>
+
+    <!-- Tarjeta de Login -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+      <div class="card-body p-4 p-sm-5">
+        <h5 class="fw-bold text-dark mb-4 text-center">Iniciar Sesión</h5>
+
+        <form [formGroup]="form" (ngSubmit)="ingresar()">
+          <!-- Campo Usuario -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-secondary small text-uppercase">
+              Usuario <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted border-end-0">👤</span>
+              <input
+                type="text"
+                class="form-control border-start-0 ps-0"
+                placeholder="Ingresa tu usuario"
+                formControlName="usuario"
+                autocomplete="username"
+                [class.is-invalid]="invalido('usuario')"
+              />
+            </div>
+            <div *ngIf="invalido('usuario')" class="text-danger small mt-1">
+              El usuario es obligatorio.
+            </div>
+          </div>
+
+          <!-- Campo Clave -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-secondary small text-uppercase">
+              Clave <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted border-end-0">🔒</span>
+              <input
+                type="password"
+                class="form-control border-start-0 ps-0"
+                placeholder="Ingresa tu contraseña"
+                formControlName="clave"
+                autocomplete="current-password"
+                [class.is-invalid]="invalido('clave')"
+              />
+            </div>
+            <div *ngIf="invalido('clave')" class="text-danger small mt-1">
+              Mínimo 6 caracteres.
+            </div>
+          </div>
+
+          <!-- Mensaje de Error de Autenticación -->
+          <div *ngIf="error" class="alert alert-danger py-2 px-3 small rounded-3 border-0 mb-3 text-center">
+            ⚠️ {{ error }}
+          </div>
+
+          <!-- Botón Ingresar -->
+          <button
+            type="submit"
+            class="btn btn-primary w-100 py-2 text-white fw-bold shadow-sm rounded-3 mt-2 mb-3"
+            [disabled]="form.invalid"
+          >
+            Ingresar al Sistema
+          </button>
+        </form>
+
+        <!-- Bloque informativo de credenciales demo -->
+        <div class="alert alert-light border small text-center text-muted mb-0 py-2 rounded-3">
+          <span class="fw-bold text-dark d-block mb-1">Credenciales de prueba:</span>
+          Usuario: <code class="text-primary fw-bold">admin</code> · Clave: <code class="text-primary fw-bold">clinica123</code>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-muted small mt-4">
+      © 2026 Clínica Veterinaria — Sistema de Citas y Pacientes
+    </p>
+  </div>
+</div>
