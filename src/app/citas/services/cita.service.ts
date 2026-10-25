@@ -52,6 +52,7 @@ export class CitaService {
     if (!raw) {
       const hoy = new Date();
       const fechaManana = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1, 10, 0, 0).toISOString();
+      const fechaManana11 = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1, 11, 0, 0).toISOString();
       const fechaAyer = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - 1, 11, 0, 0).toISOString();
 
       const iniciales: Cita[] = [
@@ -73,7 +74,7 @@ export class CitaService {
         {
           id: 103,
           mascotaId: 2,
-          fecha: fechaManana,
+          fecha: fechaManana11,
           motivo: 'Revisión periódica y corte de uñas',
           estado: 'pendiente'
         }

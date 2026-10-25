@@ -1,0 +1,59 @@
+
+@media (max-width: 991.98px) {
+
+  .navbar .container-fluid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .navbar-brand {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .navbar-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0 !important;
+  }
+
+  .acciones-sesion {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .acciones-sesion .badge {
+    display: none;
+  }
+
+  .acciones-sesion .btn {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  min-height: 42px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transform: translateY(10px);
+  }
+
+}
+
+
+/* Nombre de la clínica en computadoras */
+.navbar .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Nombre de la clínica en celulares */
+@media (max-width: 991.98px) {
+  .navbar .navbar-brand {
+    font-size: 1.15rem;
+  }
+}

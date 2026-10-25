@@ -36,6 +36,7 @@
               }
             ],
             "styles": [
+              "public/bootstrap.min.css",
               "src/styles.css"
             ]
           },

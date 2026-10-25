@@ -25,12 +25,24 @@ export class RegistroMascotaComponent {
   hoy: string = new Date().toLocaleDateString('en-CA');
 
   form = this.fb.nonNullable.group({
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
+
+    nombre: ['', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.pattern(/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*$/)
+    ]],
+
     especie: ['perro' as Especie, Validators.required],
     raza: ['', Validators.required],
     fechaNacimiento: ['', [Validators.required, fechaNoFuturaValidator]],
     dueno: this.fb.nonNullable.group({
-      nombre: ['', [Validators.required, Validators.minLength(3)]],
+
+      nombre: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:[ '-][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*$/)
+      ]],
+
       telefono: ['', [Validators.required, Validators.pattern(/^9\d{8}$/)]],
       email: ['', [Validators.required, Validators.email]]
     })
